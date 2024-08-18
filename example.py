@@ -19,7 +19,12 @@ def listen():
             newMsgList = handle.receive(group)
             if len(newMsgList) > 0: #If there are new messages present, add them
                 print("New message(s) received.")
-                newMsgList.append(handle._msgHistory[group])
+                for message in newMsgList:
+                    created_at = message["created_at"]
+                    name = message["name"]
+                    text = message["text"]
+                    print(f"[{created_at}] From {name}: {text}\n--")
+                newMsgList + handle._msgHistory[group]
                 handle._msgHistory[group] = newMsgList
         
         timer = monotonic()
