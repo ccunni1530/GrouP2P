@@ -214,7 +214,6 @@ class GrouP2P:
         with self._user["connection"] as c:
             params = dict()
             if groupID in self._msgHistory.keys() and len(self._msgHistory[groupID]) > 0:
-                print(self._msgHistory[groupID][0].keys())
                 params["since_id"] = self._msgHistory[groupID][0]["id"]
             params["limit"] = limit
             
