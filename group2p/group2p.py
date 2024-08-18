@@ -149,12 +149,13 @@ class GrouP2P:
             params["share"] = share
             params["name"] = name
             r = c.post("groups", params)
+            response = r.json()
+            groupID = response["response"]["id"]
+            self._msgHistory[groupID] = list()
 
             if users:
                 params.clear()
                 params["members"] = list()
-                response = r.json()
-                groupID = response["response"]["id"]
                 for user,pos in enumerate(users):
                     member = {
                             "nickname": ("player" + str(pos+1)),
@@ -212,13 +213,15 @@ class GrouP2P:
         """
         with self._user["connection"] as c:
             params = dict()
-            if groupID in self._msgHistory.keys():
-                params["since_id"] = self._msgHistory[groupID][0].id
+            if groupID in self._msgHistory.keys() and len(self._msgHistory[groupID]) > 0:
+                print(self._msgHistory[groupID][0].keys())
+                params["since_id"] = self._msgHistory[groupID][0]["id"]
             params["limit"] = limit
             
             r = c.get(f"groups/{groupID}/messages", params)
-            r = json.loads(r.json())
-            messages = r["messages"]
+            if r.status_code == 304: return list()
+            r = r.json()
+            messages = r["response"]["messages"]
 
             if groupID not in self._msgHistory.keys():
                 self._msgHistory[groupID] = list()
