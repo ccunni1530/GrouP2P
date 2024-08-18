@@ -38,6 +38,8 @@ class GroupMeAPI:
         userid = "-1"
         if info.status_code == 200:
             userid = info.json()["id"]
+        else:
+            raise GroupMeException(f"HTTP error ({self._connection.status_code})")
         return userid
 
     def get(self, _call: str, _params=None):
