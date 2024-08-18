@@ -153,8 +153,8 @@ class GrouP2P:
             if users:
                 params.clear()
                 params["members"] = list()
-                response = json.loads(r.json())
-                groupID = response["id"]
+                response = r.json()
+                groupID = response["response"]["id"]
                 for user,pos in enumerate(users):
                     member = {
                             "nickname": ("player" + str(pos+1)),
