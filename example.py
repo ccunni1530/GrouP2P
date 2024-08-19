@@ -35,10 +35,10 @@ def main():
     global initLoop
     parser = argparse.ArgumentParser(prog="GrouP2P Example", 
                                     description="A simple demonstration of the capabilities of the GrouP2P module.")
-    parser.add_argument("-c", "--cleanup", action="store_true")
-    parser.add_argument("-s", "--savetoken", action="store_true")
-    parser.add_argument("-r", "--removetoken", action="store_true")
-    parser.add_argument("-t", "--token", action="store", default="")
+    parser.add_argument("-c", "--cleanup", action="store_true", help="delete created group(s) after program ends.")
+    parser.add_argument("-s", "--savetoken", action="store_true", help="saves the token to config.json")
+    parser.add_argument("-r", "--removetoken", action="store_true", help="removes the token from config.json and sets it to null.")
+    parser.add_argument("-t", "--token", action="store", default="", help="specify the token to be used to connect to the GroupMe API.")
     args = parser.parse_args()
 
     print("Creating handle...")
