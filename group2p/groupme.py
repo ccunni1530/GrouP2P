@@ -20,7 +20,7 @@ class GroupMeAPI:
         self._token = token
         self._status = self.STATUS
         self._connection = requests.get(url=f"{self.URL}users/me?token={token}")
-        if self._connection.status_code != 200: raise GroupMeException(f"Failed to initialize ({self._connection.status_code}).")
+        if self._connection.status_code != 200: raise GroupMeException(f"Failed to initialize with token ({token}): HTTP Error {self._connection.status_code}.")
 
     def __enter__(self):
         return self
