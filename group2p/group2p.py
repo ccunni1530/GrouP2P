@@ -86,24 +86,21 @@ class GrouP2P:
         "player": None
     }
     
-    def __init__(self):
+    def __init__(self, token=""):
         self._msgHistory = list()
-        configPath = path.join(
-            path.abspath(path.dirname(__file__)),
-            CONFIG_FILENAME
-        )
 
-        token = ""
-        if not path.exists(configPath):
-            token = input("Enter GroupMe Developer token: ")
-        else:
-            with open(configPath, "w+") as f:
-                settings = json.loads(f)
+        if path.exists(CONFIG_FILENAME) and token == "":
+            with open(CONFIG_FILENAME, "r") as f:
                 try:
+                    settings = json.loads(f.read())
                     token = settings["token"]
-                except Exception as e:
-                    print(e)
-                    pass
+                    if not token: raise KeyError
+                except KeyError:
+                    token = input("An error occurred when attempting to read token from file. Please re-enter: ")
+                except json.JSONDecodeError as e:
+                    print(f"An error occured while trying to load the config: {e}")
+        elif token == "":
+            token = input("Enter GroupMe Developer token: ")
                 
         self._user["connection"] = GroupMeAPI(token)
         self._user["player"] = Player.fromAPI(self._user["connection"])
@@ -111,9 +108,48 @@ class GrouP2P:
         self._encoding = str.encode
 
     @property
+    def config(self):
+        """:returns: The config file settings as a dictionary."""
+        with open(CONFIG_FILENAME, "r") as f:
+            return json.loads(f.read())
+        
+    @property
     def userID(self):
         """:returns: The user's ID."""
         return self._user["connection"].user
+
+    def set_config(self, option: str, value):
+        """
+        Sets a config option and writes it to file.
+
+        :returns: The updated settings as a dictionary.
+        """
+        settings = dict()
+        if path.exists(path.join(path.abspath(path.dirname(__file__)), CONFIG_FILENAME)):
+            with open(CONFIG_FILENAME, "r") as f:
+                try:
+                    settings = json.loads(f.read())
+                except json.JSONDecodeError as e:
+                    print(f"Failed to parse JSON: {e}")
+
+        with open(CONFIG_FILENAME, "w") as f:
+            settings[option] = value
+            f.write(json.dumps(settings))
+        
+        return settings
+    
+    def get_config(self, option: str):
+        """
+        Gets a specified option from the config file.
+
+        :returns: The option requested, or None if the option wasn't found.
+        """
+        try:
+            with open(CONFIG_FILENAME, "r") as f:
+                settings = json.loads(f.read())
+                return settings[option]
+        except KeyError:
+            return None
 
     def set_encoding(self, encodingFunc):
         self._encoding = encodingFunc

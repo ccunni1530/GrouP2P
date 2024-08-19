@@ -36,10 +36,13 @@ def main():
     parser = argparse.ArgumentParser(prog="GrouP2P Example", 
                                     description="A simple demonstration of the capabilities of the GrouP2P module.")
     parser.add_argument("-c", "--cleanup", action="store_true")
+    parser.add_argument("-s", "--savetoken", action="store_true")
+    parser.add_argument("-r", "--removetoken", action="store_true")
+    parser.add_argument("-t", "--token", action="store", default="")
     args = parser.parse_args()
 
     print("Creating handle...")
-    handle = GrouP2P()
+    handle = GrouP2P(args.token)
     print("Creating group...")
     response = handle.create_group()
     print("Converting response to JSON...")
@@ -63,6 +66,10 @@ def main():
                 code = handle.delete_group(group).status_code
                 if code != 200: print(f"An error has occured deleting group {group} ({code}).")
             print("Finished cleanup.")
+        if args.removetoken:
+            handle.set_config("token", None)
+        if args.savetoken:
+            handle.set_config("token", handle._user["connection"]._token)
 
 try:
     main()
