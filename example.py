@@ -18,7 +18,6 @@ def listen():
         for group in handle._msgHistory.keys():
             newMsgList = handle.receive(group)
             if len(newMsgList) > 0: #If there are new messages present, add them
-                print("New message(s) received.")
                 for message in newMsgList:
                     created_at = message["created_at"]
                     name = message["name"]
@@ -60,8 +59,9 @@ def main():
     finally:
         if args.cleanup:
             print("\nCleaning up group(s)...")
-            groupId = response["response"]["id"]
-            print(f"{handle.delete_group(groupId)}")
+            for group in handle._msgHistory.keys():
+                code = handle.delete_group(group).status_code
+                if code != 200: print(f"An error has occured deleting group {group} ({code}).")
             print("Finished cleanup.")
 
 try:
