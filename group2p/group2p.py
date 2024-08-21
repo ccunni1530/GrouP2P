@@ -1,7 +1,6 @@
 import json
 from groupme import *
 from os import path
-from threading import Thread
 from time import monotonic
 
 CONFIG_FILENAME = "config.json"
@@ -171,4 +170,3 @@ class GrouP2P:
                 newMessages.insert(0, msg)
 
             return newMessages
-
