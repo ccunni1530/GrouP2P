@@ -12,7 +12,6 @@ class GrouP2P:
     using the service. Makes all calls necessary to the API and
     receives responses.
     """
-    _encoding = None
     _msgHistory = None
     _user = {
         "connection": None
@@ -36,7 +35,6 @@ class GrouP2P:
                 
         self._user["connection"] = GroupMeAPI(token)
         self._msgHistory = dict()
-        self._encoding = str.encode
 
     @property
     def config(self):
@@ -81,9 +79,6 @@ class GrouP2P:
                 return settings[option]
         except KeyError:
             return None
-
-    def set_encoding(self, encodingFunc):
-        self._encoding = encodingFunc
 
     def create_group(self, name="GrouP2P", users=None, share=True):
         """
@@ -135,17 +130,15 @@ class GrouP2P:
     def send(self, data: str, groupID: str):
         """
         Sends a message to the specified group containing the
-        provided data. Encodes the message into bytes and uses
-        proprietary format to distinguish grouP2P messages from
-        other kinds.
+        provided data.
 
         :returns: The server response.
         """
-        msg = Message(self._user["player"], data, self._encoding)
+        
         with self._user["connection"] as c:
             params = dict()
             params["source_guid"] = str(monotonic())[-5:]
-            params["text"] = msg
+            params["text"] = data
             r = c.post(f"/groups/{groupID}/messages", params)
 
         return r
