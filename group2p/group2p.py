@@ -1,77 +1,10 @@
 import json
-import sys
 from groupme import *
 from os import path
 from threading import Thread
 from time import monotonic
 
 CONFIG_FILENAME = "config.json"
-MESSAGE_HEADER_LENGTH = 32
-MESSAGE_LENGTH = 500
-
-class Player(object):
-    """
-    Generic player object that only stores the GroupMe user id and name by default.
-    """
-    _user = ""
-    _name = ""
-    _stats = None
-
-    @staticmethod
-    def fromAPI(api: GroupMeAPI):
-        json = api.get("users/me").json()["response"]
-        print(json.keys())
-        return Player(json['id'], json['name'])
-
-    def __init__(self, userId, displayName, stats=None):
-        self._user = userId
-        self._name = displayName
-        self._stats = stats
-
-    def __repr__(self):
-        return f"Player \"{self._name}\" ({self._user})"
-
-    def __eq__(self, other):
-        return self._user == other._user
-
-    def set(self, key, val):
-        self._stats[key] = val
-
-    def get(self, key):
-        return self._stats[key]
-
-class Message(object):
-    """
-    Serves as the standard communication method between to GrouP2P
-    users. Stores the encoded and plaintext version.
-
-    The first 32 bytes contain the userID of the sender, with padding.
-    The next 3 bytes are the digits that describe the length of the body,
-    which is immediately followed by it. The rest of the message is padding
-    to reach a length of MESSAGE_LENGTH bytes.
-    """
-    _header = None
-    _body = ""
-    _encoded = ""
-    _encoder = None
-    _id = None
-
-    def __init__(self, player=None, body="", encoder=str.encode):
-        self._header = [player._user if player else ""][0]
-        print(f"Header: {self._header}")
-        for i in range(MESSAGE_HEADER_LENGTH - len(self._header)): self._header = "A" + self._header
-        self._header += f"00{len(body)}"[:3]
-        self._body = body
-        for i in range(MESSAGE_LENGTH - len(self._header) - len(body)): body += "A"
-        self._encoder = encoder
-        self._encoded = self._encoder(self._header + self._body)
-
-    def __str__(self):
-        return f"{self._header}{self._body}"
-
-    @property
-    def id(self):
-        return self._id
 
 class GrouP2P:
     """
@@ -82,8 +15,7 @@ class GrouP2P:
     _encoding = None
     _msgHistory = None
     _user = {
-        "connection": None,
-        "player": None
+        "connection": None
     }
     
     def __init__(self, token=""):
@@ -103,7 +35,6 @@ class GrouP2P:
             token = input("Enter GroupMe Developer token: ")
                 
         self._user["connection"] = GroupMeAPI(token)
-        self._user["player"] = Player.fromAPI(self._user["connection"])
         self._msgHistory = dict()
         self._encoding = str.encode
 
@@ -153,26 +84,6 @@ class GrouP2P:
 
     def set_encoding(self, encodingFunc):
         self._encoding = encodingFunc
-
-    def friend(self, userID: str):
-        """
-        Add the userID into the player's friend list.
-        """
-        with self._user["player"] as player:
-            if "friends" not in player._stats.keys():
-                player.set("friends", set())
-
-            player._stats["friends"].add(userID)
-
-    def unfriend(self, userID: str):
-        """
-        If there, removes the userID from the player's friend list.
-        """
-        with self._user["player"] as player:
-            if "friends" not in player._stats.keys():
-                return
-
-            player._stats["friends"].remove(userID)
 
     def create_group(self, name="GrouP2P", users=None, share=True):
         """
