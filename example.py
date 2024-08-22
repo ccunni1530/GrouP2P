@@ -32,8 +32,9 @@ def listen():
 def main():
     global handle
     global initLoop
-    parser = argparse.ArgumentParser(prog="GrouP2P Example", 
-                                    description="A simple demonstration of the capabilities of the GrouP2P module.")
+    parser = argparse.ArgumentParser(prog="GrouP2P Example",
+                                     usage="python3 example.py [-h] [-c] [-s] [-r] [-t GroupMe API token]",
+                                     description="A simple demonstration of the capabilities of the GrouP2P module.")
     parser.add_argument("-c", "--cleanup", action="store_true", help="delete created group(s) after program ends.")
     parser.add_argument("-s", "--savetoken", action="store_true", help="saves the token to config.json")
     parser.add_argument("-r", "--removetoken", action="store_true", help="removes the token from config.json and sets it to null.")
