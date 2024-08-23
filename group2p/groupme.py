@@ -33,12 +33,12 @@ class GroupMeAPI:
     
     @property
     def user(self):
-        info = requests.get(url=f"{self.URL}?token={self._token}")
+        info = self.get("users/me")
         userid = "-1"
         if info.status_code == 200:
-            userid = info.json()["id"]
+            userid = info.json()["response"]["id"]
         else:
-            raise GroupMeException(f"HTTP error ({self._connection.status_code})")
+            raise GroupMeException(f"HTTP error ({info.status_code})")
         return userid
 
     def get(self, _call: str, _params=None):
