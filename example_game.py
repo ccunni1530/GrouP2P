@@ -91,16 +91,11 @@ def main():
 
     print("Creating handle...")
     handle = GrouP2P()
-    print("Creating group...")
-    response = handle.create_group()
-    print("Converting response to JSON...")
-    response = response.json()
-    print(f"JSON response: {response}")
     t = Thread(target=listen, args=(Game(args, handle),))
     try:
         print("\n\n\nListening for messages...")
         t.run()
-        if handle.send(".", response["response"]["id"]): initLoop = False
+        initLoop = False
         while True: sleep(1)
     except KeyboardInterrupt:
         print(f"\nExiting...")
