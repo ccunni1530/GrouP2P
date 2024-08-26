@@ -1,4 +1,5 @@
 dist/*
 group2p/__pycache__/*
+group2p.egg-info
 config.json
 publish.sh
