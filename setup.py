@@ -7,7 +7,9 @@ setup(
     name="group2p",
     version="0.3.0",
     license="MIT",
-    url="https://github.com/ccunni1530/GrouP2P/",
+    project_url={
+        "Repository": "https://github.com/ccunni1530/GrouP2P/"
+        },
     packages=find_packages(),
     requires=[
         "requests"
