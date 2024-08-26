@@ -9,15 +9,12 @@ class GroupMeAPI:
     """
     Used to connect to GroupMe servers and 
     """
-    STATUS = Enum("STATUS", "OFF DISCONNECTED CONNECTED ERROR")
     URL = "https://api.groupme.com/v3/"
     _token = ""
-    _status = ""
     _connection = None
 
     def __init__(self, token: str):
         self._token = token
-        self._status = self.STATUS
         self._connection = requests.get(url=f"{self.URL}users/me?token={token}")
         if self._connection.status_code != 200: raise GroupMeException(f"Failed to initialize with token ({token}): HTTP Error {self._connection.status_code}.")
 
@@ -26,10 +23,6 @@ class GroupMeAPI:
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         pass
-
-    @property
-    def status(self):
-        return self._status
     
     @property
     def user(self):
