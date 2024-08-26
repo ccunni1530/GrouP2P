@@ -33,6 +33,24 @@ The ```create_group()```, ```delete_group()```, ```join_group()```, and ```send(
 responseObj = group2pHandler.send("This is a message.", someGroupID)
 desiredContent = responseObj.json()["response"][someContent]
 print(desiredContent)
+group2pHandler.delete_group(someGroupID)
+```
+
+Creating and deleting groups can be done with ease, having no required parameters for their functions. ```create_group``` can optionally specify the name, a list of users to invite, and whether or not it should get a share token.
+
+```python
+responseObj = group2pHandler.create_group(name="My Group", users=myFriendsList, share=False)
+doStuff()
+group2pHandler.delete_group(responseObj["response"]["id"])
+```
+
+Joining a group requires that the group ID and the share token are specified, the latter being found either in the ```create_group()``` response object or from calling ```get_share_token()```.
+
+```python
+responseObj = handler1.create_group()
+groupID = responseObj["response"]["id"]
+shareToken = handler1.get_share_token(groupID)
+handler2.join_group(groupID, shareToken)
 ```
 
 The ```send()``` function will send a string to a specified group, while ```receive()``` will get the most recent messages since the last recorded message.
