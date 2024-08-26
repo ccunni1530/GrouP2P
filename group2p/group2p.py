@@ -1,5 +1,5 @@
 import json
-from groupme import *
+from .groupme import *
 from os import path
 from time import monotonic
 
