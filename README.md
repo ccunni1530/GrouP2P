@@ -25,6 +25,10 @@ Once installed, importing "group2p" into your code will give you access to the c
 
 ### GrouP2P Class
 
+#### Initialization
+
+A GrouP2P object has an optional token parameter that will be used to access the GroupMe API. Should no token be passed, the user will be prompted to enter theirs. For more information about the access token, see [GroupMeAPI Class][]
+
 The GrouP2P class contains all of the top-level functions needed to interact with the GroupMe API. Initializing the object with a string containing your developer token will begin an attempt to establish a connection to the server under the user ID associated with the token. This can be accessed by the ```userID``` property.
 
 The ```create_group()```, ```delete_group()```, ```join_group()```, and ```send()``` functions will return a response object from the Requests module, so accessing the contents of your response can be done by using the built-in JSON converter.
@@ -71,13 +75,13 @@ The ```CONFIG_FILENAME``` file is accessed by the ```config``` property and mani
 
 ```get_config()``` takes an option as a string to be used as the key to access a particular value in the JSON.
 
-### The GroupMeAPI Class
+### GroupMeAPI Class
 
 The GroupMeAPI class is the backend for GrouP2P, and can be used for total control over the HTTP requests being made. Basic interactions are already covered in GrouP2P, so only complex usage of GroupMe would require direct calls from this class.
 
 #### Initialization
 
-A GroupMeAPI object requires the access token in order to initialize. This token is tied to a specific user and allows for GrouP2P to perform actions on their behalf, such as sending messages or deleting groups. More information can be found [here](https://dev.groupme.com/). If you are a developer using this module, do NOT deploy your product with your personal token included anywhere.
+A GroupMeAPI object requires the access token in order to initialize. This token is tied to a specific user and allows for GrouP2P to perform actions on their behalf, such as sending messages or deleting groups. More information can be found [here](https://dev.groupme.com/). If you are a developer using this module, do **NOT** deploy your product with your personal token included anywhere.
 
 #### HTTP Requests
 
