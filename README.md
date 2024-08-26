@@ -27,7 +27,7 @@ Once installed, importing "group2p" into your code will give you access to the c
 
 #### Initialization
 
-A GrouP2P object has an optional token parameter that will be used to access the GroupMe API. Should no token be passed, the user will be prompted to enter theirs. For more information about the access token, see [GroupMeAPI Class][]
+A GrouP2P object has an optional token parameter that will be used to access the GroupMe API. Should no token be passed, the user will be prompted to enter theirs. For more information about the access token, see [GroupMe API](#groupmeapi-class)
 
 The GrouP2P class contains all of the top-level functions needed to interact with the GroupMe API. Initializing the object with a string containing your developer token will begin an attempt to establish a connection to the server under the user ID associated with the token. This can be accessed by the ```userID``` property.
 
