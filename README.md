@@ -31,6 +31,13 @@ The ```CONFIG_FILENAME``` file is accessed by the ```config``` property and mani
 
 ## Example
 
-```python
+The following code can be used to create a new group and send a message. ```example_basic.py``` and ```example_game.py``` both expand on this to create full programs. Currently, the example game hasn't been fully tested, so there may be some issues.
 
+```python
+from group2p import group2p
+
+handle = group2p.GrouP2P()
+response = handle.create_group(name="GrouP2P test")
+groupID = response.json()["response"]["id"]
+handle.send("Hello World!", groupID)
 ```
