@@ -23,7 +23,7 @@ pip install group2p
 ```
 Once installed, importing "group2p" into your code will give you access to the complete module.
 
-### GrouP2P and GroupMe Classes
+### GrouP2P Class
 
 The GrouP2P class contains all of the top-level functions needed to interact with the GroupMe API. Initializing the object with a string containing your developer token will begin an attempt to establish a connection to the server under the user ID associated with the token. This can be accessed by the ```userID``` property.
 
@@ -35,7 +35,7 @@ desiredContent = responseObj.json()["response"][someContent]
 print(desiredContent)
 group2pHandler.delete_group(someGroupID)
 ```
-
+#### Managing Groups
 Creating and deleting groups can be done with ease, having no required parameters for their functions. ```create_group``` can optionally specify the name, a list of users to invite, and whether or not it should get a share token.
 
 ```python
@@ -43,7 +43,7 @@ responseObj = group2pHandler.create_group(name="My Group", users=myFriendsList, 
 doStuff()
 group2pHandler.delete_group(responseObj["response"]["id"])
 ```
-
+#### Joining Groups
 Joining a group requires that the group ID and the share token are specified, the latter being found either in the ```create_group()``` response object or from calling ```get_share_token()```.
 
 ```python
@@ -53,6 +53,7 @@ shareToken = handler1.get_share_token(groupID)
 handler2.join_group(groupID, shareToken)
 ```
 
+#### Messages
 The ```send()``` function will send a string to a specified group, while ```receive()``` will get the most recent messages since the last recorded message.
 
 ```python
@@ -62,15 +63,31 @@ if len(newMessages) > 0:
     print(newMessages[0]["text"])
 ```
 
-The GroupMe class is the backend for GrouP2P, and can be used for total control over the HTTP requests being made. Basic interactions are already covered in GrouP2P, so only complex usage of GroupMe would require direct calls from this class.
-
-### Config
+#### Config
 
 The ```CONFIG_FILENAME``` file is accessed by the ```config``` property and manipulated by the ```set_config()``` and ```get_config()``` functions.
 
 ```set_config()``` takes an option as a string to be used for the key and any type for the value.
 
 ```get_config()``` takes an option as a string to be used as the key to access a particular value in the JSON.
+
+### The GroupMeAPI Class
+
+The GroupMeAPI class is the backend for GrouP2P, and can be used for total control over the HTTP requests being made. Basic interactions are already covered in GrouP2P, so only complex usage of GroupMe would require direct calls from this class.
+
+#### Initialization
+
+A GroupMeAPI object requires the access token in order to initialize. This token is tied to a specific user and allows for GrouP2P to perform actions on their behalf, such as sending messages or deleting groups. More information can be found [here](https://dev.groupme.com/). If you are a developer using this module, do NOT deploy your product with your personal token included anywhere.
+
+#### HTTP Requests
+
+The GroupMe API currently only makes use of GET and POST requests, so corresponding functions have been included in the GroupMe class. The only parameters for these functions are the URL rule being used and an optional dictionary of request parameters. Only the unique part of the rule has to be included in the parameter in order for it to work.
+
+```python
+gm = GroupMeAPI(myToken)
+resp = gm.get("users/me")
+print(resp.json()["response"]["id"])
+```
 
 ## Example
 
