@@ -1,7 +1,4 @@
 import argparse
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "group2p"))
 from group2p.group2p import *
 from threading import Thread
 from time import monotonic, sleep
