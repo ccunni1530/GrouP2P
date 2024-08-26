@@ -79,6 +79,20 @@ class GrouP2P:
         except KeyError:
             return None
 
+    def get_share_token(self, groupID: str):
+        """
+        Gets the share token of the specified group
+
+        :returns: The share token for the group, or nothing should an error occur.
+        """
+        response = self._user["connection"].get(f"groups/{groupID}")
+        if response.status_code == 200:
+            url = response.json()["response"]["share_url"]
+            segments = url.split("/")
+            return segments[-1]
+        else:
+            return ""
+
     def create_group(self, name="GrouP2P", users=None, share=True):
         """
         Starts a chat with the passed userIDs added.

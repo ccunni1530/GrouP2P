@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="group2p",
-    version="0.3.1",
+    version="0.4.0",
     license="MIT",
     project_url={
         "Repository": "https://github.com/ccunni1530/GrouP2P/"
