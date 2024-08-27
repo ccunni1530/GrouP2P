@@ -16,7 +16,13 @@ class GrouP2P:
         "connection": None
     }
     
-    def __init__(self, token=""):
+    def __init__(self, token:str=""):
+        """
+        Initializes a connection to the GroupMe API.
+
+        :param token: (optional) The access token to be used.
+        :type token: str
+        """
         self._msgHistory = list()
 
         if path.exists(CONFIG_FILENAME) and token == "":
@@ -36,21 +42,34 @@ class GrouP2P:
         self._msgHistory = dict()
 
     @property
-    def config(self):
-        """:returns: The config file settings as a dictionary."""
+    def config(self) -> dict:
+        """
+        The contents of the config JSON.
+
+        :returns: The JSON converted to a dictionary.
+        :rtype: dict
+        """
         with open(CONFIG_FILENAME, "r") as f:
             return json.loads(f.read())
         
     @property
-    def userID(self):
-        """:returns: The user's ID."""
+    def userID(self) -> str:
+        """
+        :returns: The user's ID.
+        :rtype: str
+        """
         return self._user["connection"].user
 
-    def set_config(self, option: str, value):
+    def set_config(self, option: str, value) -> dict:
         """
         Sets a config option and writes it to file.
 
+        :param option: The key to be used to access the setting.
+        :type option: str
+        :param value: The value of the setting.
+        :type value: any
         :returns: The updated settings as a dictionary.
+        :rtype: dict
         """
         settings = dict()
         if path.exists(path.join(path.abspath(path.dirname(__file__)), CONFIG_FILENAME)):
@@ -70,7 +89,10 @@ class GrouP2P:
         """
         Gets a specified option from the config file.
 
+        :param option: The key to be used to retrieve the value.
+        :type option: str
         :returns: The option requested, or None if the option wasn't found.
+        :rtype: any
         """
         try:
             with open(CONFIG_FILENAME, "r") as f:
@@ -79,11 +101,14 @@ class GrouP2P:
         except KeyError:
             return None
 
-    def get_share_token(self, groupID: str):
+    def get_share_token(self, groupID: str) -> str:
         """
         Gets the share token of the specified group
 
+        :param groupID: The ID of the group to retrieve the token from
+        :type groupID: str
         :returns: The share token for the group, or nothing should an error occur.
+        :rtype: str
         """
         response = self._user["connection"].get(f"groups/{groupID}")
         if response.status_code == 200:
@@ -93,11 +118,18 @@ class GrouP2P:
         else:
             return ""
 
-    def create_group(self, name="GrouP2P", users=None, share=True):
+    def create_group(self, name="GrouP2P", users=None, share=True) -> requests.Response:
         """
         Starts a chat with the passed userIDs added.
 
+        :param name: (default="GrouP2P") The name of the group to be created.
+        :type name: str
+        :param users: (default=None) The users to be added to the group upon creation.
+        :type users: iterable
+        :param share: Whether or not a share token will be generated upon creation.
+        :type share: bool
         :returns: The server response.
+        :rtype: requests.Response
         """
         with self._user["connection"] as c:
             params = dict()
@@ -121,31 +153,44 @@ class GrouP2P:
 
             return r
 
-    def delete_group(self, groupID: str):
+    def delete_group(self, groupID: str) -> requests.Response:
         """"
         Deletes the specified group (must be creator).
 
+        :param groupID: The ID of the group to be deleted.
+        :type groupID: str
         :returns: The server response.
+        :rtype: requests.Response
         """
         with self._user["connection"] as c:
             return c.post(f"groups/{groupID}/destroy")
 
-    def join_group(self, groupID: str, shareToken: str):
+    def join_group(self, groupID: str, shareToken: str) -> requests.Response:
         """
         Join the user to the specified group using the provided
         share token. Fails if the share token is invalid.
 
+        :param groupID: The ID of the group to join.
+        :type groupID: str
+        :param shareToken: The share token used to allow access into the group.
+        :type shareToken: str
         :returns: The server response.
+        :rtype: requests.Response
         """
         with self._user["connection"] as c:
             return c.post(f"groups/{groupID}/join/{shareToken}")
 
-    def send(self, data: str, groupID: str):
+    def send(self, data: str, groupID: str) -> requests.Response:
         """
         Sends a message to the specified group containing the
         provided data.
 
+        :param data: The text to be sent as the body of the message.
+        :type data: str
+        :param groupID: The ID of the group to send the message to.
+        :type groupID: str
         :returns: The server response.
+        :rtype: requests.Response
         """
         
         with self._user["connection"] as c:
@@ -156,13 +201,18 @@ class GrouP2P:
 
         return r
 
-    def receive(self, groupID: str, limit=20):
+    def receive(self, groupID: str, limit=20) -> requests.Response:
         """
         Checks the group for any new messages and updates the history
         stored. Gets up to and including the (limit)th most recent
         message since the last known message.
 
+        :param groupID: The ID of the group to retrieve messages from.
+        :type groupID: str
+        :param limit: (default=20) The max number of messages to retrieve.
+        :type limit: int
         :returns: A list of all new messages.
+        :rtype: requests.Response
         """
         with self._user["connection"] as c:
             params = dict()
